@@ -1,4 +1,4 @@
-# Exploratory analysis
+# Exploratory data analysis
 
 ### Special notes
 
