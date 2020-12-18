@@ -46,7 +46,7 @@ fig = px.choropleth_mapbox(
 )
 
 app.layout = html.Div(children=[
-    html.H1(children='COVID-19 Impact on NYC’s homeless population'),
+    html.H1(children='COVID-19 impact on NYC’s homeless population'),
     html.P(children='Authors: Ian S. McBride, Lifu Tao, and Xin Chen. Mentor: Ronak Etemadpour'),
 
     dcc.Graph(
