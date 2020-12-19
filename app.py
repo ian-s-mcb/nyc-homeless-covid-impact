@@ -5,7 +5,7 @@
 import json
 import numpy as np
 import pandas as pd
-from urllib.request import urlopen
+import pickle
 
 import dash
 import dash_core_components as dcc
@@ -15,37 +15,28 @@ import plotly.graph_objects as go
 
 
 def load_data(geojson_filepath):
-    '''Opens or downloads the datasets
+    '''Loads data from pickle files
     '''
-    # Dataset via API call
-    # with urlopen('https://data.cityofnewyork.us/api/geospatial/yfnk-k7r4?method=export&format=GeoJSON') as response:
-    #     geojson = json.load(response)
-
-    # Dataset via manually downloaded file
+    geojson_filename = './data/geojson.pickle'
+    shelter_df_filename = './data/shelter_df.pickle'
     try:
-        with open(geojson_filepath, 'r') as f:
-            geojson = json.load(f)
+        with open(geojson_filename, 'rb') as f:
+            geojson = pickle.load(f)
+        shelter_df = pd.read_pickle(shelter_df_filename)
     except IOError:
-        print(f'Error: data file "{geojson_filepath}" not found')
+        print('Error: pickle files not found.\nRun the explore-2 notebook to generate pickle files')
         exit(1)
 
-    boro_cds = [f['properties']['boro_cd'] for f in geojson['features']]
-    vals = np.random.rand((len(boro_cds)))
-    df = pd.DataFrame({
-        'boro_cd': boro_cds,
-        'val': vals,
-    })
+    return (geojson, shelter_df)
 
-    return (geojson, df)
-
-def create_figures(geojson, df):
+def create_figures(geojson, shelter_df):
     '''Creates two figures with the provided geojson object and dataframe'''
     top_figure = px.choropleth_mapbox(
-        df,
+        shelter_df,
         geojson=geojson,
-        locations='boro_cd',
+        locations='Community District',
         featureidkey='properties.boro_cd',
-        color='val',
+        color='Shelter Population',
         color_continuous_scale='Viridis',
         mapbox_style='carto-positron',
         zoom=10,
@@ -53,22 +44,28 @@ def create_figures(geojson, df):
         opacity=0.5,
     )
 
+    one_cd_df = shelter_df[shelter_df['Community District'] == '112']['2020-03':]
+
     bot_figure = px.bar(
-        df,
-        x='boro_cd',
-        y='val',
-        hover_data=['boro_cd', 'val'],
+        one_cd_df,
+        x=one_cd_df.index,
+        y='Shelter Population',
+        hover_data=['Shelter Population'],
     )
 
     # Remove excessive figure margin
-    margin = {
+    top_figure.layout['margin'] = {
         'l': 0, #left margin
         'r': 0, #right margin
         'b': 5, #bottom margin
         't': 0, #top margin
     }
-    top_figure.layout['margin'] = margin
-    bot_figure.layout['margin'] = margin
+    bot_figure.layout['margin'] = {
+        'l': 0, #left margin
+        'r': 0, #right margin
+        'b': 5, #bottom margin
+        't': 0, #top margin
+    }
 
     return (top_figure, bot_figure)
 
@@ -86,18 +83,18 @@ def create_app(top_figure, bot_figure):
                 html.H1(children='COVID-19 impact on NYC’s homeless population'),
             ]
         ),
-
         dcc.Graph(
             id='graph-map',
             figure=top_figure,
         ),
+        html.H4(children='Shelter population in CD-112 - West Harlem - Manhattan'),
         dcc.Graph(
             id='graph-bar',
             figure=bot_figure,
         ),
         html.Footer(
             children=[
-                html.H3('About this visualization'),
+                html.H4(children='About this visualization'),
                 html.P(children='Authors: Ian S. McBride, Lifu Tao, and Xin Chen. '),
                 html.P(children='Mentor: Ronak Etemadpour'),
             ],
