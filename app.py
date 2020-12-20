@@ -32,7 +32,7 @@ def load_data(geojson_filepath):
 def create_figures(geojson, shelter_df):
     '''Creates two figures with the provided geojson object and dataframe'''
     top_figure = px.choropleth_mapbox(
-        shelter_df,
+        shelter_df['2020-09'],
         geojson=geojson,
         locations='Community District',
         featureidkey='properties.boro_cd',
@@ -44,7 +44,7 @@ def create_figures(geojson, shelter_df):
         opacity=0.5,
     )
 
-    one_cd_df = shelter_df[shelter_df['Community District'] == '112']['2020-03':]
+    one_cd_df = shelter_df[shelter_df['Community District'] == '109']['2020-03':]
 
     bot_figure = px.bar(
         one_cd_df,
@@ -87,7 +87,7 @@ def create_app(top_figure, bot_figure):
             id='graph-map',
             figure=top_figure,
         ),
-        html.H4(children='Shelter population in CD-112 - West Harlem - Manhattan'),
+        html.H4(children='Shelter population in CD-109 - West Harlem - Manhattan'),
         dcc.Graph(
             id='graph-bar',
             figure=bot_figure,
