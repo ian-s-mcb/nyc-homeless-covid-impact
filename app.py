@@ -79,9 +79,7 @@ def create_app(top_figure, bot_figure):
     )
     app.layout = html.Div(children=[
         html.Header(
-            children=[
-                html.H1(children='COVID-19 impact on NYC’s homeless population'),
-            ]
+            children=html.H4(children='Shelter population by CD in Mar 2020')
         ),
         dcc.Graph(
             id='graph-map',
