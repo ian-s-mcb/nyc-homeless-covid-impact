@@ -32,7 +32,7 @@ def load_data(geojson_filepath):
 def create_figures(geojson, shelter_df):
     '''Creates two figures with the provided geojson object and dataframe'''
     top_figure = px.choropleth_mapbox(
-        shelter_df['2020-09'],
+        shelter_df.loc['2020-09'],
         geojson=geojson,
         locations='Community District',
         featureidkey='properties.boro_cd',
