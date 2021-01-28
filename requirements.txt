@@ -1,6 +1,9 @@
+dash
 jupyter
 jupyterlab
 matplotlib
 numpy
 pandas
 requests
+scipy
+sodapy
