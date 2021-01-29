@@ -102,7 +102,7 @@ app.layout = html.Div(children=[
         children='All shelters by CD in Sep 2020',
     ),
     dcc.Graph(
-        id='graph-map',
+        id='shelters-map',
         figure=shelters_map,
     ),
     html.H4(
@@ -110,7 +110,7 @@ app.layout = html.Div(children=[
         children='Shelter population in CD-109 - West Harlem - Manhattan',
     ),
     dcc.Graph(
-        id='graph-bar',
+        id='shelter-bar',
         figure=shelter_bar,
     ),
     html.Footer(
