@@ -79,14 +79,18 @@ app = dash.Dash(
     external_stylesheets=external_stylesheets
 )
 app.layout = html.Div(children=[
-    html.Header(
-        children=html.H4(children='Shelter population by CD in Mar 2020')
+    html.H4(
+        id='shelters-heading',
+        children='All shelters by CD in Sep 2020',
     ),
     dcc.Graph(
         id='graph-map',
         figure=top_figure,
     ),
-    html.H4(children='Shelter population in CD-109 - West Harlem - Manhattan'),
+    html.H4(
+        id='shelter-pop-heading',
+        children='Shelter population in CD-109 - West Harlem - Manhattan',
+    ),
     dcc.Graph(
         id='graph-bar',
         figure=bot_figure,
