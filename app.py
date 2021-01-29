@@ -140,6 +140,8 @@ def create_shelter_bar(clickData):
             'Shelter Population': 'Population',
         },
     )
+
+    # Remove excessive figure margin
     fig.layout['margin'] = {
         'l': 0, #left margin
         'r': 0, #right margin
