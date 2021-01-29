@@ -89,12 +89,31 @@ def create_app(top_figure, bot_figure):
             figure=bot_figure,
         ),
         html.Footer(
-            children=[
-                html.H4(children='About this visualization'),
-                html.P(children='Authors: Ian S. McBride, Lifu Tao, and Xin Chen. '),
-                html.P(children='Mentor: Ronak Etemadpour'),
-            ],
+            children=dcc.Markdown("""
+            #### About
+            This visualization was built for a two-semester
+            Computer Science class, called Senior Design,
+            at the City College of New York, held from Sep
+            2020 to May 2021. The class was divided into
+            small groups that proposed their own reseach
+            topic. The theme of the research topics data
+            visualization and the COVID-19 era.
+
+            **Credits**
+            * Authors: [Ian S. McBride][ian-s-mcb], [Lifu Tao][lifu], and [Xin Chen][xin]
+            * [Source code][src-code]
+            * Mentor: [Prof. Ronak Etemadpour][prof]
+            * Data sources:
+                * https://data.cityofnewyork.us/City-Government/Community-Districts/yfnk-k7r4
+                * https://data.cityofnewyork.us/Social-Services/Individual-Census-by-Borough-Community-District-an/veav-vj3r
+            [ian-s-mcb]: https://gitlab.com/users/ian-s-mcb/
+            [xin]: https://github.com/XinChenCSC
+            [lifu]: https://github.com/LifuTao
+            [src-code]: https://github.com/ian-s-mcb/nyc-homeless-covid-impact
+            [prof]: https://www.ccny.cuny.edu/profiles/ronak-etemadpour
+            """)
         )
+
     ])
 
     return app
