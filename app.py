@@ -15,8 +15,7 @@ import plotly.graph_objects as go
 
 
 def load_data(geojson_filename, shelter_df_filename):
-    '''Loads data from pickle files
-    '''
+    '''Loads data from pickle files'''
     try:
         with open(geojson_filename, 'rb') as f:
             geojson = pickle.load(f)
@@ -28,7 +27,7 @@ def load_data(geojson_filename, shelter_df_filename):
     return (geojson, shelter_df)
 
 def create_shelters_map():
-    '''Creates two figures with the provided geojson object and dataframe'''
+    '''Creates a map figure for all shelters at one month'''
     nyc_coordinates = {'lat': 40.714, 'lon': -74.006}
 
     fig = px.choropleth_mapbox(
@@ -59,6 +58,7 @@ def create_shelters_map():
     return fig
 
 def create_shelter_bar():
+    '''Create a bar figure for an individual shelter'''
     one_cd_df = shelter_df[shelter_df['Community District'] == '109']['2020-03':]
 
     fig = px.bar(
@@ -88,10 +88,14 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 geojson, shelter_df = load_data(geojson_filename, shelter_df_filename)
 shelters_map = create_shelters_map()
 shelter_bar = create_shelter_bar()
+
+# Create app
 app = dash.Dash(
     __name__,
     external_stylesheets=external_stylesheets
 )
+
+# Set app layout
 app.layout = html.Div(children=[
     html.H4(
         id='shelters-heading',
@@ -136,5 +140,6 @@ app.layout = html.Div(children=[
     )
 ])
 
+# Run server
 if __name__ == '__main__':
     app.run_server(debug=True)
