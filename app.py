@@ -27,9 +27,9 @@ def load_data(geojson_filename, shelter_df_filename):
 
     return (geojson, shelter_df)
 
-def create_figures(geojson, shelter_df):
+def create_shelters_map():
     '''Creates two figures with the provided geojson object and dataframe'''
-    top_figure = px.choropleth_mapbox(
+    fig = px.choropleth_mapbox(
         shelter_df.loc['2020-09'],
         geojson=geojson,
         locations='Community District',
@@ -42,30 +42,33 @@ def create_figures(geojson, shelter_df):
         opacity=0.5,
     )
 
+    # Remove excessive figure margin
+    fig.layout['margin'] = {
+        'l': 0, #left margin
+        'r': 0, #right margin
+        'b': 5, #bottom margin
+        't': 0, #top margin
+    }
+
+    return fig
+
+def create_shelter_bar():
     one_cd_df = shelter_df[shelter_df['Community District'] == '109']['2020-03':]
 
-    bot_figure = px.bar(
+    fig = px.bar(
         one_cd_df,
         x=one_cd_df.index,
         y='Shelter Population',
         hover_data=['Shelter Population'],
     )
-
-    # Remove excessive figure margin
-    top_figure.layout['margin'] = {
-        'l': 0, #left margin
-        'r': 0, #right margin
-        'b': 5, #bottom margin
-        't': 0, #top margin
-    }
-    bot_figure.layout['margin'] = {
+    fig.layout['margin'] = {
         'l': 0, #left margin
         'r': 0, #right margin
         'b': 5, #bottom margin
         't': 0, #top margin
     }
 
-    return (top_figure, bot_figure)
+    return fig
 
 # File paths
 geojson_filename = './data/geojson.pickle'
@@ -73,7 +76,8 @@ shelter_df_filename = './data/shelter_df.pickle'
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 geojson, shelter_df = load_data(geojson_filename, shelter_df_filename)
-top_figure, bot_figure = create_figures(geojson, shelter_df)
+shelters_map = create_shelters_map()
+shelter_bar = create_shelter_bar()
 app = dash.Dash(
     __name__,
     external_stylesheets=external_stylesheets
@@ -85,7 +89,7 @@ app.layout = html.Div(children=[
     ),
     dcc.Graph(
         id='graph-map',
-        figure=top_figure,
+        figure=shelters_map,
     ),
     html.H4(
         id='shelter-pop-heading',
@@ -93,7 +97,7 @@ app.layout = html.Div(children=[
     ),
     dcc.Graph(
         id='graph-bar',
-        figure=bot_figure,
+        figure=shelter_bar,
     ),
     html.Footer(
         children=dcc.Markdown("""
