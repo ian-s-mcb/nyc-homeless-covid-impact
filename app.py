@@ -103,11 +103,11 @@ def main():
     '''Entry point for app execution'''
     geojson_filename = './data/geojson.pickle'
     shelter_df_filename = './data/shelter_df.pickle'
-    return create_app(
-        *create_figures(
-            *load_data(geojson_filename, shelter_df_filename)
-        )
-    )
+    geojson, shelter_df = load_data(geojson_filename, shelter_df_filename)
+    top_figure, bot_figure = create_figures(geojson, shelter_df)
+    app = create_app(top_figure, bot_figure)
+
+    return app
 
 if __name__ == '__main__':
     main().run_server(debug=True)
