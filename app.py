@@ -67,66 +67,56 @@ def create_figures(geojson, shelter_df):
 
     return (top_figure, bot_figure)
 
-def create_app(top_figure, bot_figure):
-    '''Creates the dash app'''
-    external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+# File paths
+geojson_filename = './data/geojson.pickle'
+shelter_df_filename = './data/shelter_df.pickle'
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
-    app = dash.Dash(
-        __name__,
-        external_stylesheets=external_stylesheets
+geojson, shelter_df = load_data(geojson_filename, shelter_df_filename)
+top_figure, bot_figure = create_figures(geojson, shelter_df)
+app = dash.Dash(
+    __name__,
+    external_stylesheets=external_stylesheets
+)
+app.layout = html.Div(children=[
+    html.Header(
+        children=html.H4(children='Shelter population by CD in Mar 2020')
+    ),
+    dcc.Graph(
+        id='graph-map',
+        figure=top_figure,
+    ),
+    html.H4(children='Shelter population in CD-109 - West Harlem - Manhattan'),
+    dcc.Graph(
+        id='graph-bar',
+        figure=bot_figure,
+    ),
+    html.Footer(
+        children=dcc.Markdown("""
+        #### About
+        This visualization was built for a two-semester
+        Computer Science class, called Senior Design,
+        at the City College of New York, held from Sep
+        2020 to May 2021. The class was divided into
+        small groups that proposed their own reseach
+        topic. The theme of the research topics data
+        visualization and the COVID-19 era.
+
+        **Credits**
+        * Authors: [Ian S. McBride][ian-s-mcb], [Lifu Tao][lifu], and [Xin Chen][xin]
+        * [Source code][src-code]
+        * Mentor: [Prof. Ronak Etemadpour][prof]
+        * Data sources:
+            * https://data.cityofnewyork.us/City-Government/Community-Districts/yfnk-k7r4
+            * https://data.cityofnewyork.us/Social-Services/Individual-Census-by-Borough-Community-District-an/veav-vj3r
+        [ian-s-mcb]: https://gitlab.com/users/ian-s-mcb/
+        [xin]: https://github.com/XinChenCSC
+        [lifu]: https://github.com/LifuTao
+        [src-code]: https://github.com/ian-s-mcb/nyc-homeless-covid-impact
+        [prof]: https://www.ccny.cuny.edu/profiles/ronak-etemadpour
+        """)
     )
-    app.layout = html.Div(children=[
-        html.Header(
-            children=html.H4(children='Shelter population by CD in Mar 2020')
-        ),
-        dcc.Graph(
-            id='graph-map',
-            figure=top_figure,
-        ),
-        html.H4(children='Shelter population in CD-109 - West Harlem - Manhattan'),
-        dcc.Graph(
-            id='graph-bar',
-            figure=bot_figure,
-        ),
-        html.Footer(
-            children=dcc.Markdown("""
-            #### About
-            This visualization was built for a two-semester
-            Computer Science class, called Senior Design,
-            at the City College of New York, held from Sep
-            2020 to May 2021. The class was divided into
-            small groups that proposed their own reseach
-            topic. The theme of the research topics data
-            visualization and the COVID-19 era.
-
-            **Credits**
-            * Authors: [Ian S. McBride][ian-s-mcb], [Lifu Tao][lifu], and [Xin Chen][xin]
-            * [Source code][src-code]
-            * Mentor: [Prof. Ronak Etemadpour][prof]
-            * Data sources:
-                * https://data.cityofnewyork.us/City-Government/Community-Districts/yfnk-k7r4
-                * https://data.cityofnewyork.us/Social-Services/Individual-Census-by-Borough-Community-District-an/veav-vj3r
-            [ian-s-mcb]: https://gitlab.com/users/ian-s-mcb/
-            [xin]: https://github.com/XinChenCSC
-            [lifu]: https://github.com/LifuTao
-            [src-code]: https://github.com/ian-s-mcb/nyc-homeless-covid-impact
-            [prof]: https://www.ccny.cuny.edu/profiles/ronak-etemadpour
-            """)
-        )
-
-    ])
-
-    return app
-
-def main():
-    '''Entry point for app execution'''
-    geojson_filename = './data/geojson.pickle'
-    shelter_df_filename = './data/shelter_df.pickle'
-    geojson, shelter_df = load_data(geojson_filename, shelter_df_filename)
-    top_figure, bot_figure = create_figures(geojson, shelter_df)
-    app = create_app(top_figure, bot_figure)
-
-    return app
+])
 
 if __name__ == '__main__':
-    main().run_server(debug=True)
+    app.run_server(debug=True)
