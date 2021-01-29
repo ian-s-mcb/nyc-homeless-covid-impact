@@ -8,6 +8,7 @@ import pandas as pd
 import pickle
 
 import dash
+from dash.dependencies import Input, Output
 import dash_core_components as dcc
 import dash_html_components as html
 import plotly.express as px
@@ -44,33 +45,9 @@ def create_shelters_map():
         labels={
             'Shelter Population': 'Population',
         },
-
     )
 
     # Remove excessive figure margin
-    fig.layout['margin'] = {
-        'l': 0, #left margin
-        'r': 0, #right margin
-        'b': 5, #bottom margin
-        't': 0, #top margin
-    }
-
-    return fig
-
-def create_shelter_bar():
-    '''Create a bar figure for an individual shelter'''
-    one_cd_df = shelter_df[shelter_df['Community District'] == '109']['2020-03':]
-
-    fig = px.bar(
-        one_cd_df,
-        x=one_cd_df.index,
-        y='Shelter Population',
-        hover_data=['Shelter Population'],
-        labels={
-            'index': 'Month',
-            'Shelter Population': 'Population',
-        },
-    )
     fig.layout['margin'] = {
         'l': 0, #left margin
         'r': 0, #right margin
@@ -87,7 +64,6 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 geojson, shelter_df = load_data(geojson_filename, shelter_df_filename)
 shelters_map = create_shelters_map()
-shelter_bar = create_shelter_bar()
 
 # Create app
 app = dash.Dash(
@@ -106,12 +82,10 @@ app.layout = html.Div(children=[
         figure=shelters_map,
     ),
     html.H4(
-        id='shelter-pop-heading',
-        children='Shelter population in CD-109 - West Harlem - Manhattan',
+        id='shelter-heading',
     ),
     dcc.Graph(
         id='shelter-bar',
-        figure=shelter_bar,
     ),
     html.Footer(
         children=dcc.Markdown("""
@@ -139,6 +113,41 @@ app.layout = html.Div(children=[
         """)
     )
 ])
+
+# Create shelter population bar figure as a callback
+@app.callback(
+    Output('shelter-bar', 'figure'),
+    Output('shelter-heading', 'children'),
+    Input('shelters-map', 'clickData'))
+def create_shelter_bar(clickData):
+    '''Create a bar figure for an individual shelter'''
+    # Default bar to Community District 109, otherwise use clickData
+    if (clickData):
+        cd = clickData['points'][0]['location']
+    else:
+        cd = '109'
+
+    one_cd_df = shelter_df[shelter_df['Community District'] == cd]['2020-03':]
+    heading = f'Shelter population in CD-{cd} over time'
+
+    fig = px.bar(
+        one_cd_df,
+        x=one_cd_df.index,
+        y='Shelter Population',
+        hover_data=['Shelter Population'],
+        labels={
+            'index': 'Month',
+            'Shelter Population': 'Population',
+        },
+    )
+    fig.layout['margin'] = {
+        'l': 0, #left margin
+        'r': 0, #right margin
+        'b': 5, #bottom margin
+        't': 0, #top margin
+    }
+
+    return fig, heading
 
 # Run server
 if __name__ == '__main__':
