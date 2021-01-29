@@ -74,7 +74,7 @@ app = dash.Dash(
 # Set app layout
 app.layout = html.Div(children=[
     html.H4(
-        id='shelters-heading',
+        id='shelters-map-heading',
         children='All shelters by CD in Sep 2020',
     ),
     dcc.Graph(
@@ -82,7 +82,7 @@ app.layout = html.Div(children=[
         figure=shelters_map,
     ),
     html.H4(
-        id='shelter-heading',
+        id='shelter-bar-heading',
     ),
     dcc.Graph(
         id='shelter-bar',
@@ -117,7 +117,7 @@ app.layout = html.Div(children=[
 # Create shelter population bar figure as a callback
 @app.callback(
     Output('shelter-bar', 'figure'),
-    Output('shelter-heading', 'children'),
+    Output('shelter-bar-heading', 'children'),
     Input('shelters-map', 'clickData'))
 def create_shelter_bar(clickData):
     '''Create a bar figure for an individual shelter'''
