@@ -29,6 +29,8 @@ def load_data(geojson_filename, shelter_df_filename):
 
 def create_shelters_map():
     '''Creates two figures with the provided geojson object and dataframe'''
+    nyc_coordinates = {'lat': 40.714, 'lon': -74.006}
+
     fig = px.choropleth_mapbox(
         shelter_df.loc['2020-09'],
         geojson=geojson,
@@ -38,8 +40,12 @@ def create_shelters_map():
         color_continuous_scale='Viridis',
         mapbox_style='carto-positron',
         zoom=10,
-        center={'lat': 40.714, 'lon': -74.006},
+        center=nyc_coordinates,
         opacity=0.5,
+        labels={
+            'Shelter Population': 'Population',
+        },
+
     )
 
     # Remove excessive figure margin
@@ -60,6 +66,10 @@ def create_shelter_bar():
         x=one_cd_df.index,
         y='Shelter Population',
         hover_data=['Shelter Population'],
+        labels={
+            'index': 'Month',
+            'Shelter Population': 'Population',
+        },
     )
     fig.layout['margin'] = {
         'l': 0, #left margin
