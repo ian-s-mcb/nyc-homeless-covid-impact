@@ -14,11 +14,9 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 
-def load_data(geojson_filepath):
+def load_data(geojson_filename, shelter_df_filename):
     '''Loads data from pickle files
     '''
-    geojson_filename = './data/geojson.pickle'
-    shelter_df_filename = './data/shelter_df.pickle'
     try:
         with open(geojson_filename, 'rb') as f:
             geojson = pickle.load(f)
@@ -103,10 +101,11 @@ def create_app(top_figure, bot_figure):
 
 def main():
     '''Entry point for app execution'''
-    geojson_filepath = './data/Community Districts.geojson'
+    geojson_filename = './data/geojson.pickle'
+    shelter_df_filename = './data/shelter_df.pickle'
     return create_app(
         *create_figures(
-            *load_data(geojson_filepath)
+            *load_data(geojson_filename, shelter_df_filename)
         )
     )
 
