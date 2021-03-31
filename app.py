@@ -47,13 +47,9 @@ def create_shelters_map():
         },
     )
 
-    # Remove excessive figure margin
-    fig.layout['margin'] = {
-        'l': 0, #left margin
-        'r': 0, #right margin
-        'b': 5, #bottom margin
-        't': 0, #top margin
-    }
+    fig.update_layout(
+        margin={'r': 0, 'b': 0, 'l': 0, 't': 0},
+    )
 
     return fig
 
@@ -141,13 +137,9 @@ def create_shelter_bar(clickData):
         },
     )
 
-    # Remove excessive figure margin
-    fig.layout['margin'] = {
-        'l': 0, #left margin
-        'r': 0, #right margin
-        'b': 5, #bottom margin
-        't': 0, #top margin
-    }
+    fig.update_layout(
+        margin={'r': 0, 'b': 0, 'l': 0, 't': 0},
+    )
 
     return fig, heading
 
